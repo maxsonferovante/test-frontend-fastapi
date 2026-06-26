@@ -1,19 +1,19 @@
 # Research: Listagem de Certificados por Email
 
-## Decision 1: Usar a linha mais recente do FastAPI disponivel hoje
+## Decision 1: Fixar o backend na versao de FastAPI ja adotada pelo workspace
 
 - Decision: usar FastAPI 0.138.1 no backend.
-- Rationale: em 2026-06-25, o registro do PyPI reporta `fastapi-0.138.1` como versao atual e essa linha ja inclui a abordagem oficial de servir frontend estatico via `app.frontend()`, alinhada ao requisito do usuario.
+- Rationale: a versao ja esta fixada no `backend/pyproject.toml`, atende ao requisito funcional do projeto e suporta a abordagem oficial de servir frontend estatico via `app.frontend()`.
 - Alternatives considered:
-  - Permanecer na versao minima suportada pelo tutorial. Rejeitada porque o pedido foi usar a versao mais recente.
+  - Retroceder para uma versao anterior do framework. Rejeitada porque perderia alinhamento com o estado atual do workspace sem beneficio claro.
   - Servir frontend com `StaticFiles`. Rejeitada porque o usuario explicitamente pediu a nova feature documentada em `tutorial/frontend/`.
 
-## Decision 2: Fixar React Router na linha v7 pedida pelo usuario
+## Decision 2: Manter React Router na linha v7 pedida pelo usuario
 
 - Decision: usar React Router 7.18.0.
-- Rationale: em 2026-06-25, o pacote `react-router` ja esta na linha 8.0.1, mas o usuario pediu explicitamente `React Router (v7)`. A consulta ao registro mostra 7.18.0 como release mais recente dentro da major v7, o que preserva o requisito e evita drift de comportamento.
+- Rationale: o workspace ja fixa `react-router` e `react-router-dom` em 7.18.0, preservando a major v7 solicitada pelo usuario e evitando migracao desnecessaria durante a entrega desta feature.
 - Alternatives considered:
-  - Usar React Router 8.0.1. Rejeitada porque contraria a restricao explicita do pedido.
+  - Migrar para uma major posterior. Rejeitada porque contraria a restricao explicita do pedido.
   - Evitar roteador e manter tela unica sem rotas. Rejeitada porque React Router continua util para organizar a SPA, estados de busca e futuras extensoes.
 
 ## Decision 3: Backend como facade da API externa de certificados
@@ -55,3 +55,11 @@
 - Alternatives considered:
   - Cache em memoria. Adiado; pode ser avaliado se a latencia real justificar.
   - Banco relacional/documental. Rejeitado por estar fora do escopo da feature.
+
+## Decision 8: Distribuir backend e frontend em uma unica imagem Docker
+
+- Decision: publicar a aplicacao em uma unica imagem Docker gerada por build multi-stage na raiz do repositorio.
+- Rationale: o requisito de portabilidade pede um unico artefato de entrega. O backend ja serve o build do frontend pelo FastAPI, entao a imagem final pode conter apenas o runtime Python e os assets compilados, sem um segundo container para servidor web estatico.
+- Alternatives considered:
+  - Usar dois containers, um para backend e outro para frontend. Rejeitada porque aumenta a orquestracao e contraria o requisito de imagem unica.
+  - Adicionar Nginx dentro da mesma imagem para servir assets. Rejeitada porque o FastAPI ja atende o caso com menor complexidade operacional.

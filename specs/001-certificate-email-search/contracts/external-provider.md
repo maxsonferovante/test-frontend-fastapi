@@ -3,7 +3,7 @@
 ## Endpoint
 
 - Method: `GET`
-- URL pattern: `https://SUA_URL_AQUI/dev/api/v1/users/{email}/certificates`
+- URL pattern: `https://mpl8es0cb7.execute-api.us-east-1.amazonaws.com/dev/api/v1/users/{email}/certificates`
 - Required header: `x-api-key: <secret>`
 
 ## Expected Response Shape
@@ -19,7 +19,7 @@
       "participant_name": "Maxson Almeida",
       "participant_email": "teste@gmail.com",
       "participant_document": "",
-      "certificate_url": "https://SUA_URL_AQUI/dev/api/v1/certificate/download?id=060d543f-7c44-4370-97c6-ca54cae0bfc2",
+      "certificate_url": "https://mpl8es0cb7.execute-api.us-east-1.amazonaws.com/dev/api/v1/certificate/download?id=060d543f-7c44-4370-97c6-ca54cae0bfc2",
       "created_at": "2025-12-06T17:57:07.693972",
       "updated_at": "2025-12-06T17:57:07.693972",
       "success": true

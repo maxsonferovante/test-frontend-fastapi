@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: User description: "construir uma aplicacao web para listar os certificados de um usuario a partir do seu email, com a opcao de listar os que deram sucesso e os que nao deram."
+**Input**: User description: "construir uma aplicacao web para listar os certificados de um usuario a partir do seu email, com a opcao de listar os que deram sucesso e os que nao deram. precisamos disponibilizar a nossa aplicacao em uma imagem docker para garantir a portabilidade, com uma unica imagem para backend e front."
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -56,6 +56,21 @@ Como usuaria, quero receber mensagens claras quando o email informado for invali
 
 ---
 
+### User Story 4 - Disponibilizar a aplicacao em pacote unico portatil (Priority: P3)
+
+Como equipe responsavel pela operacao, quero disponibilizar a aplicacao completa em um unico pacote distribuivel para iniciar o sistema em ambientes diferentes com o minimo de variacao entre instalacoes.
+
+**Why this priority**: A funcionalidade principal de consulta continua sendo o MVP, mas a portabilidade reduz esforco operacional e facilita demonstracao, homologacao e implantacao.
+
+**Independent Test**: Pode ser testada de forma independente ao preparar o pacote distribuivel, executa-lo em um ambiente limpo e validar que a interface da aplicacao e a consulta de certificados ficam acessiveis sem montagem manual separada de componentes.
+
+**Acceptance Scenarios**:
+
+1. **Given** que a equipe possui acesso ao pacote distribuivel da aplicacao, **When** ela inicia esse pacote em um ambiente compativel, **Then** a aplicacao completa fica disponivel para uso sem exigir inicializacao separada de componentes de interface e servico.
+2. **Given** que a aplicacao foi iniciada pelo pacote distribuivel, **When** uma usuaria acessa a interface principal, **Then** ela consegue executar a busca de certificados normalmente no mesmo endereco exposto pela aplicacao.
+
+---
+
 ### Edge Cases
 
 - O email informado retorna certificados com combinacoes mistas de sucesso e falha na mesma consulta.
@@ -63,6 +78,7 @@ Como usuaria, quero receber mensagens claras quando o email informado for invali
 - O filtro selecionado nao possui nenhum item correspondente dentro da busca atual.
 - A usuaria tenta buscar com o campo de email vazio ou em formato invalido.
 - A consulta falha temporariamente e nao deve exibir resultados parciais enganadores.
+- O pacote distribuivel e iniciado em um ambiente limpo e precisa expor a aplicacao completa sem etapas manuais adicionais de composicao.
 
 ## Requirements *(mandatory)*
 
@@ -77,12 +93,16 @@ Como usuaria, quero receber mensagens claras quando o email informado for invali
 - **FR-007**: O sistema MUST informar quando nao houver certificados para o email consultado.
 - **FR-008**: O sistema MUST apresentar mensagens claras quando a consulta nao puder ser concluida ou quando o email informado for invalido.
 - **FR-009**: O sistema MUST permitir que a usuaria execute uma nova busca com outro email sem precisar recarregar a aplicacao.
+- **FR-010**: O sistema MUST ser disponibilizado em um unico pacote distribuivel que contenha a aplicacao completa necessaria para uso da busca de certificados.
+- **FR-011**: O pacote distribuivel MUST permitir iniciar a interface de consulta e o servico responsavel pela listagem sem exigir processos de inicializacao separados pela equipe operadora.
+- **FR-012**: O sistema MUST manter a experiencia de busca e filtragem de certificados consistente quando executado a partir do pacote distribuivel.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Consulta por Email**: representa a solicitacao da usuaria para localizar certificados a partir de um email informado e do filtro selecionado.
 - **Certificado**: representa um registro retornado pela busca, identificado como pertencente ao email consultado e classificado por resultado de sucesso ou sem sucesso.
 - **Filtro de Resultado**: representa a opcao de visualizacao aplicada sobre os certificados retornados, podendo ser todos, somente sucesso ou somente sem sucesso.
+- **Pacote Distribuivel da Aplicacao**: representa a unidade unica de entrega da aplicacao completa, pronta para ser iniciada em ambientes compativeis com comportamento consistente.
 
 ## Success Criteria *(mandatory)*
 
@@ -92,6 +112,8 @@ Como usuaria, quero receber mensagens claras quando o email informado for invali
 - **SC-002**: Pelo menos 90% das usuarias conseguem localizar certificados de um email especifico na primeira tentativa sem ajuda externa.
 - **SC-003**: Pelo menos 95% das alternancias entre os filtros de resultado exibem apenas os itens esperados da busca atual, sem misturar estados.
 - **SC-004**: Pelo menos 90% das situacoes de email invalido, ausencia de resultados ou indisponibilidade temporaria sao corretamente compreendidas pelas usuarias em testes de aceitacao.
+- **SC-005**: A equipe consegue colocar a aplicacao completa em funcionamento em um ambiente compativel usando apenas o pacote distribuivel e as configuracoes documentadas em ate 15 minutos.
+- **SC-006**: Em validacoes de implantacao, 100% das execucoes bem-sucedidas do pacote distribuivel disponibilizam a busca de certificados e a interface principal no mesmo fluxo de inicializacao.
 
 ## Assumptions
 
@@ -99,3 +121,4 @@ Como usuaria, quero receber mensagens claras quando o email informado for invali
 - Cada certificado retornado pela fonte de dados ja possui classificacao confiavel de sucesso ou sem sucesso.
 - A primeira versao cobre consulta individual por email e nao inclui exportacao, edicao ou processamento em lote.
 - A fonte de dados dos certificados esta disponivel para consulta no contexto do produto e pode responder com ausencia de resultados ou erro temporario.
+- O ambiente de destino tera suporte para executar o pacote distribuivel definido para a aplicacao.

@@ -51,6 +51,20 @@ O modelo de dados da feature e majoritariamente de leitura. O backend recebe uma
   - `filtered_count` deve refletir exatamente o tamanho de `certificates`.
   - `filtered_count` nunca pode ser maior que `total_count`.
 
+### ApplicationDistributionPackage
+
+- Purpose: representar a unidade operacional usada para distribuir a aplicacao completa.
+- Fields:
+  - `delivery_type`: identificador do formato de entrega adotado pela equipe.
+  - `contains_backend`: indica que o servico HTTP interno faz parte do pacote.
+  - `contains_frontend_assets`: indica que os assets compilados da interface fazem parte do pacote.
+  - `startup_entrypoint`: comando principal de inicializacao do pacote.
+  - `exposed_port`: porta HTTP disponibilizada para acesso da aplicacao.
+- Validation Rules:
+  - `delivery_type` deve identificar um unico artefato distribuivel.
+  - `contains_backend` e `contains_frontend_assets` devem permanecer verdadeiros para cumprir o requisito de entrega completa.
+  - `startup_entrypoint` deve iniciar a aplicacao sem dependencia de processo operacional separado para frontend.
+
 ### ExternalProviderResponse
 
 - Purpose: espelhar a resposta recebida do provedor externo para fins de mapeamento de integracao.
@@ -65,6 +79,7 @@ O modelo de dados da feature e majoritariamente de leitura. O backend recebe uma
 - `CertificateSearchRequest` produz um `CertificateSearchResult`.
 - `CertificateSearchResult` contem zero ou muitos `CertificateRecord`.
 - `ExternalProviderResponse` e transformado em `CertificateSearchResult`.
+- `ApplicationDistributionPackage` encapsula a entrega operacional do backend e dos assets do frontend para disponibilizar `CertificateSearchResult` pela interface web.
 
 ## State Transitions
 
@@ -80,3 +95,9 @@ O modelo de dados da feature e majoritariamente de leitura. O backend recebe uma
 
 - `success=true` -> certificado emitido com URL de download potencialmente disponivel.
 - `success=false` -> certificado nao emitido ou indisponivel; URL pode ser nula.
+
+### Distribution Package State
+
+- `build_pending` -> artefato unico ainda nao gerado.
+- `built` -> pacote pronto para distribuicao com backend e frontend incorporados.
+- `running` -> pacote iniciado e servindo a SPA e a API interna pelo mesmo fluxo de inicializacao.

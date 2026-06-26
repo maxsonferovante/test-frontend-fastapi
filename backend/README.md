@@ -18,3 +18,12 @@ uv run pytest
 ```
 
 O backend carrega o arquivo `.env` da raiz do repositorio.
+
+## Docker
+
+Na imagem unica, o frontend compilado e servido pelo mesmo processo FastAPI.
+
+```bash
+docker build -t certificate-app:local ..
+docker run --rm --env-file ../.env -p 8000:8000 certificate-app:local
+```

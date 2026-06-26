@@ -31,4 +31,4 @@
 
 ## Notes
 
-- Checklist validada em uma iteracao; nenhuma correcao adicional foi necessaria.
+- Checklist revalidada apos incluir o requisito de pacote distribuivel unico para a aplicacao; nenhuma pendencia adicional identificada.

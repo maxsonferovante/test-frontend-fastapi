@@ -4,17 +4,18 @@
 
 - Python 3.14 disponivel localmente
 - Node.js 22+ e npm
-- Variavel de ambiente `CERTIFICATE_API_KEY` configurada com a chave do provedor externo
-- Acesso de rede ao endpoint `https://SUA_URL_AQUI`
+- `uv` instalado para sincronizar dependencias Python
+- Docker disponivel localmente para validar a imagem unica
+- Arquivo `.env` na raiz do repositorio com `CERTIFICATE_API_KEY` e URL base do provedor configuradas
+- Acesso de rede ao endpoint do provedor externo documentado em [external-provider.md](./contracts/external-provider.md)
 
 ## Suggested Workspace Setup
 
 ### Backend
 
 ```bash
-cd backend
-uv sync
-uv run fastapi dev src/certificate_app/main.py
+uv sync --directory backend
+uv run --directory backend python -m uvicorn certificate_app.main:app --host 127.0.0.1 --port 8000 --app-dir src --reload
 ```
 
 ### Frontend
@@ -61,6 +62,32 @@ npm run build
 4. Confirmar que a SPA e servida pelo FastAPI.
 5. Navegar diretamente para uma rota client-side e confirmar fallback para `index.html`.
 
+### Scenario 5: Imagem Docker unica da aplicacao
+
+1. Gerar o build do frontend para disponibilizar os assets que serao empacotados:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+2. Construir a imagem unica na raiz do repositorio:
+
+```bash
+docker build -t certificate-app:local .
+```
+
+3. Iniciar a imagem apontando para o arquivo `.env` da raiz:
+
+```bash
+docker run --rm --env-file .env -p 8000:8000 certificate-app:local
+```
+
+4. Acessar `http://127.0.0.1:8000/`.
+5. Confirmar que a interface e a busca de certificados funcionam no mesmo endereco exposto pela imagem.
+6. Confirmar que nao e necessario iniciar frontend e backend separadamente para usar a aplicacao.
+
 ## Contract Validation
 
 - Validar o contrato interno em [backend-openapi.yaml](./contracts/backend-openapi.yaml).
@@ -79,7 +106,12 @@ npm run test
 ```
 
 ```bash
+cd frontend
 npm run test:e2e
+```
+
+```bash
+docker build -t certificate-app:local .
 ```
 
 ## Expected Outcomes
@@ -88,3 +120,4 @@ npm run test:e2e
 - O backend nao expoe `x-api-key` ao frontend.
 - O frontend apresenta estados de carregamento, vazio, erro e sucesso.
 - O filtro alterna a visualizacao sem nova consulta externa para a mesma resposta carregada.
+- A imagem Docker unica sobe a aplicacao completa com a SPA servida pelo FastAPI no mesmo endpoint HTTP.
