@@ -5,7 +5,7 @@
 - Python 3.14 disponivel localmente
 - Node.js 22+ e npm
 - Variavel de ambiente `CERTIFICATE_API_KEY` configurada com a chave do provedor externo
-- Acesso de rede ao endpoint `https://mpl8es0cb7.execute-api.us-east-1.amazonaws.com`
+- Acesso de rede ao endpoint `https://SUA_URL_AQUI`
 
 ## Suggested Workspace Setup
 
@@ -30,7 +30,7 @@ npm run dev
 ### Scenario 1: Busca com resultados mistos
 
 1. Abrir a aplicacao web.
-2. Informar `maxsonferovante@gmail.com`.
+2. Informar `teste@gmail.com`.
 3. Executar a busca.
 4. Confirmar que a interface exibe pelo menos um certificado com `success=true` e um com `success=false`.
 5. Aplicar o filtro `success` e validar que apenas certificados bem-sucedidos permanecem visiveis.

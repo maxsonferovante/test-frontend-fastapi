@@ -1,7 +1,7 @@
 [project]
 name = "test-frontend-fastapi"
 version = "0.1.0"
-description = "Add your description here"
+description = "Workspace for the certificate search full-stack application"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = []
