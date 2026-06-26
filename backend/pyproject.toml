@@ -1,0 +1,40 @@
+[project]
+name = "certificate-app-backend"
+version = "0.1.0"
+description = "Backend for certificate search application"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "email-validator>=2.3.0,<3",
+  "fastapi==0.138.1",
+  "httpx>=0.28.1,<0.29",
+  "pydantic-settings>=2.10.1,<3",
+  "uvicorn>=0.35.0,<0.36",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.1,<9",
+  "pytest-asyncio>=1.0.0,<2",
+  "pytest-cov>=6.2.1,<7",
+  "ruff>=0.12.0,<0.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/certificate_app"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
