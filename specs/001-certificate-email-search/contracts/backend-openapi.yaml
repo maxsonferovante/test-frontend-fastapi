@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: Certificate Search Backend API
+  version: 0.1.0
+  description: API interna da aplicacao web para consultar certificados por email.
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /api/v1/certificates:
+    get:
+      summary: Listar certificados por email
+      description: Consulta certificados por email e aplica filtro de resultado na resposta interna.
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+            format: email
+          description: Email do usuario a ser consultado.
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum: [all, success, failed]
+            default: all
+          description: Filtro de status aplicado sobre os certificados retornados.
+      responses:
+        "200":
+          description: Consulta concluida com sucesso, com ou sem certificados.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateSearchResponse"
+        "400":
+          description: Parametros invalidos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Falha ao consultar o provedor externo.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Provedor externo indisponivel ou timeout.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    CertificateSearchResponse:
+      type: object
+      required:
+        - email
+        - applied_filter
+        - total_count
+        - filtered_count
+        - certificates
+        - has_success
+        - has_failed
+      properties:
+        email:
+          type: string
+          format: email
+        applied_filter:
+          type: string
+          enum: [all, success, failed]
+        total_count:
+          type: integer
+          minimum: 0
+        filtered_count:
+          type: integer
+          minimum: 0
+        has_success:
+          type: boolean
+        has_failed:
+          type: boolean
+        certificates:
+          type: array
+          items:
+            $ref: "#/components/schemas/Certificate"
+    Certificate:
+      type: object
+      required:
+        - id
+        - order_id
+        - product_id
+        - participant_name
+        - participant_email
+        - participant_document
+        - success
+      properties:
+        id:
+          type: string
+          format: uuid
+        order_id:
+          type: integer
+        product_id:
+          type: integer
+        participant_name:
+          type: string
+        participant_email:
+          type: string
+          format: email
+        participant_document:
+          type: string
+        certificate_url:
+          type:
+            - string
+            - "null"
+          format: uri
+        created_at:
+          type:
+            - string
+            - "null"
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - "null"
+          format: date-time
+        success:
+          type: boolean
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
