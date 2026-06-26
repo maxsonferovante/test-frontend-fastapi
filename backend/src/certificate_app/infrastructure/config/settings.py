@@ -38,7 +38,18 @@ class Settings(BaseSettings):
     def resolved_frontend_dist_dir(self) -> Path:
         """Resolve the frontend dist directory relative to the repo root."""
         if self.frontend_dist_dir:
-            return Path(self.frontend_dist_dir).expanduser().resolve()
+            configured_path = Path(self.frontend_dist_dir).expanduser()
+            if configured_path.is_absolute():
+                return configured_path.resolve()
+
+            candidates = [
+                (Path.cwd() / configured_path).resolve(),
+                (self._repo_root / configured_path).resolve(),
+            ]
+            for candidate in candidates:
+                if candidate.exists():
+                    return candidate
+            return candidates[0]
         return self._repo_root / "frontend" / "dist"
 
 
